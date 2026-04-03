@@ -49,6 +49,14 @@ app.post('/order', async (req, res) => {
     'INSERT INTO orders (customer_name, items, total_price) VALUES ($1, $2, $3)',
     [customerName || 'LINE用戶', JSON.stringify(items), totalPrice]
   )
+
+  // 通知老闆
+  const itemList = items.map(i => `・${i.name} $${i.price}`).join('\n')
+  await client.pushMessage({
+    to: 'U3c74e1a853f680557220e3809302216d',
+    messages: [{ type: 'text', text: `🔔 新訂單！\n\n${itemList}\n\n總計 $${totalPrice}` }]
+  })
+
   res.json({ success: true })
 })
 
