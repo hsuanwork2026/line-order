@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>巷子裡 鮭鮀魚焿 - 線上點餐</title>
+<title>巷子裡 𩵚魠魚焿 - 線上點餐</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
@@ -13,54 +13,56 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 .category { padding: 16px 16px 8px; font-size: 16px; font-weight: bold; color: #2c3e7a; border-bottom: 2px solid #2c3e7a; margin: 8px 16px 0; }
 .menu-item { background: white; margin: 8px 16px; border-radius: 10px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
 .item-info h3 { font-size: 16px; color: #333; }
-.item-info p { font-size: 12px; color: #999; margin-top: 2px; }
 .item-right { display: flex; align-items: center; gap: 10px; }
 .item-price { font-size: 18px; font-weight: bold; color: #c0392b; }
-.add-btn { background: #2c3e7a; color: white; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 22px; cursor: pointer; line-height: 1; }
+.qty-control { display: flex; align-items: center; gap: 6px; }
+.qty-btn { background: #2c3e7a; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 18px; cursor: pointer; line-height: 1; display: flex; align-items: center; justify-content: center; }
+.qty-btn.minus { background: #aaa; }
+.qty-num { font-size: 15px; font-weight: bold; min-width: 16px; text-align: center; }
 .cart { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 12px 16px; box-shadow: 0 -2px 12px rgba(0,0,0,0.12); }
 .cart-info { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: #555; }
+.cart-items { font-size: 13px; color: #888; margin-bottom: 8px; max-height: 40px; overflow: hidden; }
 .order-btn { background: #2c3e7a; color: white; border: none; border-radius: 8px; width: 100%; padding: 13px; font-size: 16px; font-weight: bold; cursor: pointer; }
 .order-btn:disabled { background: #bbb; }
 .success { text-align: center; padding: 60px 20px; display: none; }
 .success h2 { color: #2c3e7a; font-size: 26px; margin-bottom: 12px; }
 .success p { color: #666; font-size: 15px; }
-.cart-items { font-size: 13px; color: #888; max-height: 40px; overflow: hidden; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>🐟 巷子裡 鮭鮀魚焿</h1>
+  <h1>🐟 巷子裡 𩵚魠魚焿</h1>
   <p>台中市工業區一路96巷7弄1號1樓之2</p>
 </div>
 
 <div class="menu" id="menuSection">
 
-  <div class="category">🐟 鮭鮀魚焿</div>
-  <div class="menu-item"><div class="item-info"><h3>鮭鮀魚焿 - 焿</h3></div><div class="item-right"><span class="item-price">$90</span><button class="add-btn" onclick="addItem('鮭鮀魚焿(焿)', 90)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>鮭鮀魚焿 - 飯</h3></div><div class="item-right"><span class="item-price">$100</span><button class="add-btn" onclick="addItem('鮭鮀魚焿(飯)', 100)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>鮭鮀魚焿 - 麵</h3></div><div class="item-right"><span class="item-price">$100</span><button class="add-btn" onclick="addItem('鮭鮀魚焿(麵)', 100)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>鮭鮀魚焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$100</span><button class="add-btn" onclick="addItem('鮭鮀魚焿(米粉)', 100)">+</button></div></div>
+  <div class="category">🐟 𩵚魠魚焿</div>
+  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 焿</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('𩵚魠魚焿(焿)', 90, -1)">−</button><span class="qty-num" id="qty-𩵚魠魚焿(焿)">0</span><button class="qty-btn" onclick="changeQty('𩵚魠魚焿(焿)', 90, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 飯</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('𩵚魠魚焿(飯)', 100, -1)">−</button><span class="qty-num" id="qty-𩵚魠魚焿(飯)">0</span><button class="qty-btn" onclick="changeQty('𩵚魠魚焿(飯)', 100, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 麵</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('𩵚魠魚焿(麵)', 100, -1)">−</button><span class="qty-num" id="qty-𩵚魠魚焿(麵)">0</span><button class="qty-btn" onclick="changeQty('𩵚魠魚焿(麵)', 100, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('𩵚魠魚焿(米粉)', 100, -1)">−</button><span class="qty-num" id="qty-𩵚魠魚焿(米粉)">0</span><button class="qty-btn" onclick="changeQty('𩵚魠魚焿(米粉)', 100, 1)">+</button></div></div></div>
 
-  <div class="category">🐠 浮水魚焿 <span style="font-size:12px;font-weight:normal;color:#888">（虱目魚肚十焿魚漿）</span></div>
-  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 焿</h3></div><div class="item-right"><span class="item-price">$100</span><button class="add-btn" onclick="addItem('浮水魚焿(焿)', 100)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 飯</h3></div><div class="item-right"><span class="item-price">$110</span><button class="add-btn" onclick="addItem('浮水魚焿(飯)', 110)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 麵</h3></div><div class="item-right"><span class="item-price">$110</span><button class="add-btn" onclick="addItem('浮水魚焿(麵)', 110)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$110</span><button class="add-btn" onclick="addItem('浮水魚焿(米粉)', 110)">+</button></div></div>
+  <div class="category">🐠 浮水魚焿 <span style="font-size:12px;font-weight:normal;color:#888">（虱目魚肚＋焿魚漿）</span></div>
+  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 焿</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('浮水魚焿(焿)', 100, -1)">−</button><span class="qty-num" id="qty-浮水魚焿(焿)">0</span><button class="qty-btn" onclick="changeQty('浮水魚焿(焿)', 100, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 飯</h3></div><div class="item-right"><span class="item-price">$110</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('浮水魚焿(飯)', 110, -1)">−</button><span class="qty-num" id="qty-浮水魚焿(飯)">0</span><button class="qty-btn" onclick="changeQty('浮水魚焿(飯)', 110, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 麵</h3></div><div class="item-right"><span class="item-price">$110</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('浮水魚焿(麵)', 110, -1)">−</button><span class="qty-num" id="qty-浮水魚焿(麵)">0</span><button class="qty-btn" onclick="changeQty('浮水魚焿(麵)', 110, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$110</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('浮水魚焿(米粉)', 110, -1)">−</button><span class="qty-num" id="qty-浮水魚焿(米粉)">0</span><button class="qty-btn" onclick="changeQty('浮水魚焿(米粉)', 110, 1)">+</button></div></div></div>
 
   <div class="category">🐷 古早味肉焿</div>
-  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 焿</h3></div><div class="item-right"><span class="item-price">$80</span><button class="add-btn" onclick="addItem('古早味肉焿(焿)', 80)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 飯</h3></div><div class="item-right"><span class="item-price">$90</span><button class="add-btn" onclick="addItem('古早味肉焿(飯)', 90)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 麵</h3></div><div class="item-right"><span class="item-price">$90</span><button class="add-btn" onclick="addItem('古早味肉焿(麵)', 90)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$90</span><button class="add-btn" onclick="addItem('古早味肉焿(米粉)', 90)">+</button></div></div>
+  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 焿</h3></div><div class="item-right"><span class="item-price">$80</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('古早味肉焿(焿)', 80, -1)">−</button><span class="qty-num" id="qty-古早味肉焿(焿)">0</span><button class="qty-btn" onclick="changeQty('古早味肉焿(焿)', 80, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 飯</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('古早味肉焿(飯)', 90, -1)">−</button><span class="qty-num" id="qty-古早味肉焿(飯)">0</span><button class="qty-btn" onclick="changeQty('古早味肉焿(飯)', 90, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 麵</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('古早味肉焿(麵)', 90, -1)">−</button><span class="qty-num" id="qty-古早味肉焿(麵)">0</span><button class="qty-btn" onclick="changeQty('古早味肉焿(麵)', 90, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('古早味肉焿(米粉)', 90, -1)">−</button><span class="qty-num" id="qty-古早味肉焿(米粉)">0</span><button class="qty-btn" onclick="changeQty('古早味肉焿(米粉)', 90, 1)">+</button></div></div></div>
 
   <div class="category">🥢 小菜</div>
-  <div class="menu-item"><div class="item-info"><h3>乾擔仔麵</h3></div><div class="item-right"><span class="item-price">$50</span><button class="add-btn" onclick="addItem('乾擔仔麵', 50)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>乾米粉</h3></div><div class="item-right"><span class="item-price">$50</span><button class="add-btn" onclick="addItem('乾米粉', 50)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>乾板條</h3></div><div class="item-right"><span class="item-price">$50</span><button class="add-btn" onclick="addItem('乾板條', 50)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>肉燥飯</h3></div><div class="item-right"><span class="item-price">$50</span><button class="add-btn" onclick="addItem('肉燥飯', 50)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>燙青菜</h3></div><div class="item-right"><span class="item-price">$50</span><button class="add-btn" onclick="addItem('燙青菜', 50)">+</button></div></div>
-  <div class="menu-item"><div class="item-info"><h3>滷蛋</h3></div><div class="item-right"><span class="item-price">$15</span><button class="add-btn" onclick="addItem('滷蛋', 15)">+</button></div></div>
+  <div class="menu-item"><div class="item-info"><h3>乾擔仔麵</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('乾擔仔麵', 50, -1)">−</button><span class="qty-num" id="qty-乾擔仔麵">0</span><button class="qty-btn" onclick="changeQty('乾擔仔麵', 50, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>乾米粉</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('乾米粉', 50, -1)">−</button><span class="qty-num" id="qty-乾米粉">0</span><button class="qty-btn" onclick="changeQty('乾米粉', 50, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>乾板條</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('乾板條', 50, -1)">−</button><span class="qty-num" id="qty-乾板條">0</span><button class="qty-btn" onclick="changeQty('乾板條', 50, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>肉燥飯</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('肉燥飯', 50, -1)">−</button><span class="qty-num" id="qty-肉燥飯">0</span><button class="qty-btn" onclick="changeQty('肉燥飯', 50, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>燙青菜</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('燙青菜', 50, -1)">−</button><span class="qty-num" id="qty-燙青菜">0</span><button class="qty-btn" onclick="changeQty('燙青菜', 50, 1)">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>滷蛋</h3></div><div class="item-right"><span class="item-price">$15</span><div class="qty-control"><button class="qty-btn minus" onclick="changeQty('滷蛋', 15, -1)">−</button><span class="qty-num" id="qty-滷蛋">0</span><button class="qty-btn" onclick="changeQty('滷蛋', 15, 1)">+</button></div></div></div>
 
 </div>
 
@@ -79,29 +81,42 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 </div>
 
 <script>
-let cart = []
-function addItem(name, price) {
-  cart.push({ name, price })
-  document.getElementById('count').textContent = cart.length
-  const total = cart.reduce((s, i) => s + i.price, 0)
-  document.getElementById('total').textContent = '$' + total
-  document.getElementById('cartItems').textContent = cart.map(i => i.name).join('、')
-  const btn = document.getElementById('orderBtn')
-  btn.disabled = false
-  btn.textContent = '立即下單（' + cart.length + '項）'
+let cart = {}
+
+function changeQty(name, price, delta) {
+  if (!cart[name]) cart[name] = { name, price, qty: 0 }
+  cart[name].qty += delta
+  if (cart[name].qty < 0) cart[name].qty = 0
+  document.getElementById('qty-' + name).textContent = cart[name].qty
+  updateCart()
 }
+
+function updateCart() {
+  const items = Object.values(cart).filter(i => i.qty > 0)
+  const totalQty = items.reduce((s, i) => s + i.qty, 0)
+  const totalPrice = items.reduce((s, i) => s + i.price * i.qty, 0)
+  document.getElementById('count').textContent = totalQty
+  document.getElementById('total').textContent = '$' + totalPrice
+  document.getElementById('cartItems').textContent = items.length
+    ? items.map(i => `${i.name} x${i.qty}`).join('、')
+    : '尚未選擇餐點'
+  const btn = document.getElementById('orderBtn')
+  btn.disabled = totalQty === 0
+  btn.textContent = totalQty > 0 ? `立即下單（${totalQty}項）` : '請先選擇餐點'
+}
+
 async function submitOrder() {
-  if (!cart.length) return
+  const items = Object.values(cart).filter(i => i.qty > 0)
+  if (!items.length) return
   const btn = document.getElementById('orderBtn')
   btn.disabled = true
   btn.textContent = '送出中...'
-  for (const item of cart) {
-    await fetch('/order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customerName: 'LINE用戶', itemName: item.name, itemPrice: item.price })
-    })
-  }
+  const orderItems = items.flatMap(i => Array(i.qty).fill({ name: i.name, price: i.price }))
+  await fetch('/order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerName: 'LINE用戶', items: orderItems })
+  })
   document.getElementById('menuSection').style.display = 'none'
   document.getElementById('cartBar').style.display = 'none'
   document.getElementById('success').style.display = 'block'

@@ -21,8 +21,9 @@ body { font-family: sans-serif; background: #f0f2f5; }
 .order-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .order-id { font-weight: bold; color: #2c3e7a; font-size: 15px; }
 .order-time { font-size: 12px; color: #aaa; }
-.order-item { font-size: 15px; color: #333; margin-bottom: 4px; }
-.order-price { font-size: 14px; color: #c0392b; font-weight: bold; }
+.order-items { margin: 8px 0; }
+.order-item-row { font-size: 14px; color: #333; padding: 2px 0; }
+.order-total { font-size: 15px; color: #c0392b; font-weight: bold; margin-top: 6px; border-top: 1px solid #f0f0f0; padding-top: 6px; }
 .status-select { margin-top: 10px; width: 100%; padding: 8px; border-radius: 6px; border: 1.5px solid #ddd; font-size: 14px; cursor: pointer; }
 .status-待處理 { border-left: 4px solid #e67e22; }
 .status-製作中 { border-left: 4px solid #3498db; }
@@ -87,8 +88,8 @@ function updateStats() {
   document.getElementById('pending-count').textContent = allOrders.filter(o => o.status === '待處理').length
   const today = new Date().toDateString()
   const todayRevenue = allOrders
-    .filter(o => new Date(o.created_at).toDateString() === today)
-    .reduce((sum, o) => sum + o.item_price, 0)
+    .filter(o => new Date(o.created_at).toDateString() === today && o.status !== '取消')
+    .reduce((sum, o) => sum + o.total_price, 0)
   document.getElementById('today-revenue').textContent = '$' + todayRevenue
 }
 
@@ -108,15 +109,16 @@ function renderOrders() {
   }
   container.innerHTML = filtered.map(order => {
     const time = new Date(order.created_at).toLocaleString('zh-TW', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    const itemRows = order.items.map(i => `<div class="order-item-row">・${i.name} $${i.price}</div>`).join('')
     return `
     <div class="order-card status-${order.status}">
       <div class="order-top">
         <span class="order-id">#${order.id} ${order.customer_name}</span>
         <span class="badge badge-${order.status}">${order.status}</span>
       </div>
-      <div class="order-item">${order.item_name}</div>
+      <div class="order-items">${itemRows}</div>
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <span class="order-price">$${order.item_price}</span>
+        <span class="order-total">總計 $${order.total_price}</span>
         <span class="order-time">${time}</span>
       </div>
       <select class="status-select" onchange="updateStatus(${order.id}, this.value)">

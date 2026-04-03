@@ -19,8 +19,8 @@ async function initDB() {
     CREATE TABLE IF NOT EXISTS orders (
       id SERIAL PRIMARY KEY,
       customer_name TEXT,
-      item_name TEXT,
-      item_price INTEGER,
+      items JSONB,
+      total_price INTEGER,
       status TEXT DEFAULT '待處理',
       created_at TIMESTAMP DEFAULT NOW()
     )
@@ -42,23 +42,21 @@ app.post('/webhook', (req, res) => {
     .catch(err => { console.error(err); res.status(500).end() })
 })
 
-// 新增訂單
 app.post('/order', async (req, res) => {
-  const { customerName, itemName, itemPrice } = req.body
+  const { customerName, items } = req.body
+  const totalPrice = items.reduce((sum, i) => sum + i.price, 0)
   await pool.query(
-    'INSERT INTO orders (customer_name, item_name, item_price) VALUES ($1, $2, $3)',
-    [customerName || 'LINE用戶', itemName, itemPrice]
+    'INSERT INTO orders (customer_name, items, total_price) VALUES ($1, $2, $3)',
+    [customerName || 'LINE用戶', JSON.stringify(items), totalPrice]
   )
   res.json({ success: true })
 })
 
-// 取得所有訂單
 app.get('/orders', async (req, res) => {
   const result = await pool.query('SELECT * FROM orders ORDER BY created_at DESC')
   res.json({ success: true, data: result.rows })
 })
 
-// ✅ 新增：更新訂單狀態
 app.patch('/order/:id/status', async (req, res) => {
   const { id } = req.params
   const { status } = req.body
@@ -67,10 +65,10 @@ app.patch('/order/:id/status', async (req, res) => {
 })
 
 const menu = [
-  { name: '鮭鮀魚焿(焿)', price: 90 },
-  { name: '鮭鮀魚焿(飯)', price: 100 },
-  { name: '鮭鮀魚焿(麵)', price: 100 },
-  { name: '鮭鮀魚焿(米粉)', price: 100 },
+  { name: '𩵚魠魚焿(焿)', price: 90 },
+  { name: '𩵚魠魚焿(飯)', price: 100 },
+  { name: '𩵚魠魚焿(麵)', price: 100 },
+  { name: '𩵚魠魚焿(米粉)', price: 100 },
   { name: '浮水魚焿(焿)', price: 100 },
   { name: '浮水魚焿(飯)', price: 110 },
   { name: '浮水魚焿(麵)', price: 110 },
@@ -95,7 +93,7 @@ async function handleEvent(event) {
     const url = 'https://line-order-production.up.railway.app'
     return client.replyMessage({
       replyToken: event.replyToken,
-      messages: [{ type: 'text', text: `🐟 巷子裡 鮭鮀魚焿 線上點餐：\n\n${url}\n\n點擊連結即可選餐下單！` }]
+      messages: [{ type: 'text', text: `🐟 巷子裡 𩵚魠魚焿 線上點餐：\n\n${url}\n\n點擊連結即可選餐下單！` }]
     })
   }
 
@@ -107,7 +105,10 @@ async function handleEvent(event) {
         messages: [{ type: 'text', text: '您還沒有任何訂單！' }]
       })
     }
-    const text = result.rows.map(o => `#${o.id} ${o.item_name} $${o.item_price} - ${o.status}`).join('\n')
+    const text = result.rows.map(o => {
+      const itemList = o.items.map(i => `${i.name} $${i.price}`).join('、')
+      return `#${o.id} ${itemList} 共$${o.total_price} - ${o.status}`
+    }).join('\n')
     return client.replyMessage({
       replyToken: event.replyToken,
       messages: [{ type: 'text', text: `📦 最近訂單：\n\n${text}` }]
@@ -117,8 +118,8 @@ async function handleEvent(event) {
   const found = menu.find(i => msg.includes(i.name))
   if (found) {
     await pool.query(
-      'INSERT INTO orders (customer_name, item_name, item_price) VALUES ($1, $2, $3)',
-      ['LINE用戶', found.name, found.price]
+      'INSERT INTO orders (customer_name, items, total_price) VALUES ($1, $2, $3)',
+      ['LINE用戶', JSON.stringify([{ name: found.name, price: found.price }]), found.price]
     )
     return client.replyMessage({
       replyToken: event.replyToken,
