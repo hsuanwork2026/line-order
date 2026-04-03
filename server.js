@@ -6,7 +6,7 @@ const app = express()
 
 const config = {
   channelSecret: 'b849944abe3ede63e22dea748f011943',
-  channelAccessToken: 'lf5vscNztL39LDmV1yuN8ERLpINC61lzCFt4md0Axz9LGzDB3V231SCF9Y9PzQFNZq0kVVMSqxg7kMfn2RsV1BAQ49yDeEwbJW2PF/T2Frz8Xv/ocqx7LbOubgHTWee1yAgf51IAMn+qOhMlR4sr+AdB04t89/1O/w1cDnyilFU='
+  channelAccessToken: '4whlhzl4qYDR8UquXfAeQWWvNY4TsI+OX9Rxl+dtThIbPL3BdF+6/q5DFrBGS/O9Zq0kVVMSqxg7kMfn2RsV1BAQ49yDeEwbJW2PF/T2Frws/FGBoBa9SMWV+2bUo1O7ayM06OeMjHF4pfJLo7Sn6AdB04t89/1O/w1cDnyilFU='
 }
 
 const pool = new Pool({
