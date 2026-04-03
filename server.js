@@ -42,6 +42,7 @@ app.post('/webhook', (req, res) => {
     .catch(err => { console.error(err); res.status(500).end() })
 })
 
+// 新增訂單
 app.post('/order', async (req, res) => {
   const { customerName, itemName, itemPrice } = req.body
   await pool.query(
@@ -51,9 +52,18 @@ app.post('/order', async (req, res) => {
   res.json({ success: true })
 })
 
+// 取得所有訂單
 app.get('/orders', async (req, res) => {
   const result = await pool.query('SELECT * FROM orders ORDER BY created_at DESC')
   res.json({ success: true, data: result.rows })
+})
+
+// ✅ 新增：更新訂單狀態
+app.patch('/order/:id/status', async (req, res) => {
+  const { id } = req.params
+  const { status } = req.body
+  await pool.query('UPDATE orders SET status = $1 WHERE id = $2', [status, id])
+  res.json({ success: true })
 })
 
 const menu = [
