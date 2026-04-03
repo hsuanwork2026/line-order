@@ -89,6 +89,12 @@ async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') return
   const msg = event.message.text
 
+  if (msg === '我的ID') {
+  return client.replyMessage({
+    replyToken: event.replyToken,
+    messages: [{ type: 'text', text: '你的ID是：' + event.source.userId }]
+  })
+}
   if (msg === '菜單' || msg === '點餐') {
     const url = 'https://line-order-production.up.railway.app'
     return client.replyMessage({
