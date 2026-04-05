@@ -28,10 +28,10 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 .success h2 { color: #2c3e7a; font-size: 26px; margin-bottom: 12px; }
 .success p { color: #666; font-size: 15px; }
 
-/* 特殊需求 Modal */
+/* Modal 共用 */
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; display: none; align-items: flex-end; }
 .modal-overlay.show { display: flex; }
-.modal { background: white; border-radius: 16px 16px 0 0; padding: 20px; width: 100%; max-height: 80vh; overflow-y: auto; }
+.modal { background: white; border-radius: 16px 16px 0 0; padding: 20px; width: 100%; max-height: 85vh; overflow-y: auto; }
 .modal h2 { font-size: 18px; color: #2c3e7a; margin-bottom: 4px; }
 .modal .price { color: #c0392b; font-weight: bold; font-size: 16px; margin-bottom: 16px; }
 .modal-section { margin-bottom: 16px; }
@@ -44,17 +44,34 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 .modal-cancel { flex: 1; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px; background: white; font-size: 15px; cursor: pointer; color: #666; }
 .modal-confirm { flex: 2; padding: 12px; border: none; border-radius: 8px; background: #2c3e7a; color: white; font-size: 15px; font-weight: bold; cursor: pointer; }
 
-/* 時間選擇 Modal */
-.time-modal { background: white; border-radius: 16px 16px 0 0; padding: 24px 20px; width: 100%; }
-.time-modal h2 { font-size: 18px; color: #2c3e7a; margin-bottom: 20px; text-align: center; }
-.time-picker-wrap { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 20px; }
+/* 內用外帶選擇 */
+.dine-modal { background: white; border-radius: 16px 16px 0 0; padding: 24px 20px; width: 100%; }
+.dine-modal h2 { font-size: 20px; color: #2c3e7a; margin-bottom: 24px; text-align: center; }
+.dine-btns { display: flex; gap: 12px; margin-bottom: 16px; }
+.dine-btn { flex: 1; padding: 20px 10px; border: 2px solid #ddd; border-radius: 12px; background: white; font-size: 17px; font-weight: bold; color: #555; cursor: pointer; text-align: center; transition: all 0.2s; }
+.dine-btn.active { border-color: #2c3e7a; background: #eef2ff; color: #2c3e7a; }
+.dine-btn .icon { font-size: 28px; display: block; margin-bottom: 6px; }
+
+/* 取餐方式選擇 */
+.pickup-section { margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; display: none; }
+.pickup-section h3 { font-size: 16px; color: #333; margin-bottom: 14px; }
+.pickup-btns { display: flex; gap: 10px; margin-bottom: 16px; }
+.pickup-btn { flex: 1; padding: 14px 8px; border: 2px solid #ddd; border-radius: 10px; background: white; font-size: 15px; font-weight: bold; color: #555; cursor: pointer; text-align: center; }
+.pickup-btn.active { border-color: #2c3e7a; background: #eef2ff; color: #2c3e7a; }
+.pickup-btn small { display: block; font-size: 12px; font-weight: normal; color: #888; margin-top: 4px; }
+.pickup-btn.active small { color: #2c3e7a; }
+
+/* 時間選擇器 */
+.time-section { margin-top: 16px; display: none; }
+.time-section h3 { font-size: 15px; color: #333; margin-bottom: 12px; }
+.time-picker-wrap { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 12px; }
 .scroll-col { height: 160px; overflow-y: scroll; width: 80px; text-align: center; border: 1.5px solid #ddd; border-radius: 10px; scroll-snap-type: y mandatory; -webkit-overflow-scrolling: touch; }
 .scroll-col::-webkit-scrollbar { display: none; }
 .time-slot { height: 40px; line-height: 40px; font-size: 24px; scroll-snap-align: center; cursor: pointer; color: #bbb; }
 .time-slot.selected { color: #2c3e7a; font-weight: bold; font-size: 28px; }
 .time-colon { font-size: 32px; font-weight: bold; padding: 0 12px; color: #2c3e7a; }
-.time-display { text-align: center; font-size: 16px; color: #555; margin-bottom: 20px; }
-.time-display strong { color: #2c3e7a; font-size: 20px; }
+.time-display { text-align: center; font-size: 15px; color: #555; margin-bottom: 4px; }
+.time-display strong { color: #2c3e7a; font-size: 18px; }
 </style>
 </head>
 <body>
@@ -66,30 +83,30 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 
 <div class="menu" id="menuSection">
   <div class="category">🐟 𩵚魠魚焿</div>
-  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 焿</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('𩵚魠魚焿(焿)', 90)">−</button><span class="qty-num" id="qty-𩵚魠魚焿(焿)">0</span><button class="qty-btn" onclick="openModal('𩵚魠魚焿(焿)', 90, '焿')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 飯</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('𩵚魠魚焿(飯)', 100)">−</button><span class="qty-num" id="qty-𩵚魠魚焿(飯)">0</span><button class="qty-btn" onclick="openModal('𩵚魠魚焿(飯)', 100, '飯')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 麵</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('𩵚魠魚焿(麵)', 100)">−</button><span class="qty-num" id="qty-𩵚魠魚焿(麵)">0</span><button class="qty-btn" onclick="openModal('𩵚魠魚焿(麵)', 100, '麵')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('𩵚魠魚焿(米粉)', 100)">−</button><span class="qty-num" id="qty-𩵚魠魚焿(米粉)">0</span><button class="qty-btn" onclick="openModal('𩵚魠魚焿(米粉)', 100, '米粉')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 焿</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('𩵚魠魚焿(焿)')">−</button><span class="qty-num" id="qty-𩵚魠魚焿(焿)">0</span><button class="qty-btn" onclick="openModal('𩵚魠魚焿(焿)', 90, '焿')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 飯</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('𩵚魠魚焿(飯)')">−</button><span class="qty-num" id="qty-𩵚魠魚焿(飯)">0</span><button class="qty-btn" onclick="openModal('𩵚魠魚焿(飯)', 100, '飯')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 麵</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('𩵚魠魚焿(麵)')">−</button><span class="qty-num" id="qty-𩵚魠魚焿(麵)">0</span><button class="qty-btn" onclick="openModal('𩵚魠魚焿(麵)', 100, '麵')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('𩵚魠魚焿(米粉)')">−</button><span class="qty-num" id="qty-𩵚魠魚焿(米粉)">0</span><button class="qty-btn" onclick="openModal('𩵚魠魚焿(米粉)', 100, '米粉')">+</button></div></div></div>
 
   <div class="category">🐠 浮水魚焿 <span style="font-size:12px;font-weight:normal;color:#888">（虱目魚肚＋焿魚漿）</span></div>
-  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 焿</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('浮水魚焿(焿)', 100)">−</button><span class="qty-num" id="qty-浮水魚焿(焿)">0</span><button class="qty-btn" onclick="openModal('浮水魚焿(焿)', 100, '焿')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 飯</h3></div><div class="item-right"><span class="item-price">$110</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('浮水魚焿(飯)', 110)">−</button><span class="qty-num" id="qty-浮水魚焿(飯)">0</span><button class="qty-btn" onclick="openModal('浮水魚焿(飯)', 110, '飯')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 麵</h3></div><div class="item-right"><span class="item-price">$110</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('浮水魚焿(麵)', 110)">−</button><span class="qty-num" id="qty-浮水魚焿(麵)">0</span><button class="qty-btn" onclick="openModal('浮水魚焿(麵)', 110, '麵')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$110</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('浮水魚焿(米粉)', 110)">−</button><span class="qty-num" id="qty-浮水魚焿(米粉)">0</span><button class="qty-btn" onclick="openModal('浮水魚焿(米粉)', 110, '米粉')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 焿</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('浮水魚焿(焿)')">−</button><span class="qty-num" id="qty-浮水魚焿(焿)">0</span><button class="qty-btn" onclick="openModal('浮水魚焿(焿)', 100, '焿')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 飯</h3></div><div class="item-right"><span class="item-price">$110</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('浮水魚焿(飯)')">−</button><span class="qty-num" id="qty-浮水魚焿(飯)">0</span><button class="qty-btn" onclick="openModal('浮水魚焿(飯)', 110, '飯')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 麵</h3></div><div class="item-right"><span class="item-price">$110</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('浮水魚焿(麵)')">−</button><span class="qty-num" id="qty-浮水魚焿(麵)">0</span><button class="qty-btn" onclick="openModal('浮水魚焿(麵)', 110, '麵')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>浮水魚焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$110</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('浮水魚焿(米粉)')">−</button><span class="qty-num" id="qty-浮水魚焿(米粉)">0</span><button class="qty-btn" onclick="openModal('浮水魚焿(米粉)', 110, '米粉')">+</button></div></div></div>
 
   <div class="category">🐷 古早味肉焿</div>
-  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 焿</h3></div><div class="item-right"><span class="item-price">$80</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('古早味肉焿(焿)', 80)">−</button><span class="qty-num" id="qty-古早味肉焿(焿)">0</span><button class="qty-btn" onclick="openModal('古早味肉焿(焿)', 80, '焿')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 飯</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('古早味肉焿(飯)', 90)">−</button><span class="qty-num" id="qty-古早味肉焿(飯)">0</span><button class="qty-btn" onclick="openModal('古早味肉焿(飯)', 90, '飯')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 麵</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('古早味肉焿(麵)', 90)">−</button><span class="qty-num" id="qty-古早味肉焿(麵)">0</span><button class="qty-btn" onclick="openModal('古早味肉焿(麵)', 90, '麵')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('古早味肉焿(米粉)', 90)">−</button><span class="qty-num" id="qty-古早味肉焿(米粉)">0</span><button class="qty-btn" onclick="openModal('古早味肉焿(米粉)', 90, '米粉')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 焿</h3></div><div class="item-right"><span class="item-price">$80</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('古早味肉焿(焿)')">−</button><span class="qty-num" id="qty-古早味肉焿(焿)">0</span><button class="qty-btn" onclick="openModal('古早味肉焿(焿)', 80, '焿')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 飯</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('古早味肉焿(飯)')">−</button><span class="qty-num" id="qty-古早味肉焿(飯)">0</span><button class="qty-btn" onclick="openModal('古早味肉焿(飯)', 90, '飯')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 麵</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('古早味肉焿(麵)')">−</button><span class="qty-num" id="qty-古早味肉焿(麵)">0</span><button class="qty-btn" onclick="openModal('古早味肉焿(麵)', 90, '麵')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>古早味肉焿 - 米粉</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('古早味肉焿(米粉)')">−</button><span class="qty-num" id="qty-古早味肉焿(米粉)">0</span><button class="qty-btn" onclick="openModal('古早味肉焿(米粉)', 90, '米粉')">+</button></div></div></div>
 
   <div class="category">🥢 小菜</div>
-  <div class="menu-item"><div class="item-info"><h3>乾擔仔麵</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('乾擔仔麵', 50)">−</button><span class="qty-num" id="qty-乾擔仔麵">0</span><button class="qty-btn" onclick="openModal('乾擔仔麵', 50, '麵')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>乾米粉</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('乾米粉', 50)">−</button><span class="qty-num" id="qty-乾米粉">0</span><button class="qty-btn" onclick="openModal('乾米粉', 50, '米粉')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>乾板條</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('乾板條', 50)">−</button><span class="qty-num" id="qty-乾板條">0</span><button class="qty-btn" onclick="openModal('乾板條', 50, '麵')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>肉燥飯</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('肉燥飯', 50)">−</button><span class="qty-num" id="qty-肉燥飯">0</span><button class="qty-btn" onclick="openModal('肉燥飯', 50, '飯')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>燙青菜</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('燙青菜', 50)">−</button><span class="qty-num" id="qty-燙青菜">0</span><button class="qty-btn" onclick="openModal('燙青菜', 50, '其他')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>滷蛋</h3></div><div class="item-right"><span class="item-price">$15</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('滷蛋', 15)">−</button><span class="qty-num" id="qty-滷蛋">0</span><button class="qty-btn" onclick="openModal('滷蛋', 15, '其他')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>乾擔仔麵</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('乾擔仔麵')">−</button><span class="qty-num" id="qty-乾擔仔麵">0</span><button class="qty-btn" onclick="openModal('乾擔仔麵', 50, '麵')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>乾米粉</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('乾米粉')">−</button><span class="qty-num" id="qty-乾米粉">0</span><button class="qty-btn" onclick="openModal('乾米粉', 50, '米粉')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>乾板條</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('乾板條')">−</button><span class="qty-num" id="qty-乾板條">0</span><button class="qty-btn" onclick="openModal('乾板條', 50, '麵')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>肉燥飯</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('肉燥飯')">−</button><span class="qty-num" id="qty-肉燥飯">0</span><button class="qty-btn" onclick="openModal('肉燥飯', 50, '飯')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>燙青菜</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('燙青菜')">−</button><span class="qty-num" id="qty-燙青菜">0</span><button class="qty-btn" onclick="openModal('燙青菜', 50, '其他')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>滷蛋</h3></div><div class="item-right"><span class="item-price">$15</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('滷蛋')">−</button><span class="qty-num" id="qty-滷蛋">0</span><button class="qty-btn" onclick="openModal('滷蛋', 15, '其他')">+</button></div></div></div>
 </div>
 
 <div class="success" id="success">
@@ -103,7 +120,7 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
     <span>已選 <strong id="count">0</strong> 項</span>
     <span>總計 <strong id="total">$0</strong></span>
   </div>
-  <button class="order-btn" id="orderBtn" onclick="openTimeModal()" disabled>請先選擇餐點</button>
+  <button class="order-btn" id="orderBtn" onclick="openDineModal()" disabled>請先選擇餐點</button>
 </div>
 
 <!-- 特殊需求 Modal -->
@@ -133,18 +150,46 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
   </div>
 </div>
 
-<!-- 取餐時間 Modal -->
-<div class="modal-overlay" id="timeModalOverlay">
-  <div class="time-modal">
-    <h2>⏰ 選擇取餐時間</h2>
-    <div class="time-picker-wrap">
-      <div class="scroll-col" id="col-hour"></div>
-      <div class="time-colon">:</div>
-      <div class="scroll-col" id="col-minute"></div>
+<!-- 內用外帶 + 取餐方式 Modal -->
+<div class="modal-overlay" id="dineModalOverlay">
+  <div class="dine-modal">
+    <h2>選擇用餐方式</h2>
+
+    <div class="dine-btns">
+      <button class="dine-btn active" id="btn-內用" onclick="selectDine('內用')">
+        <span class="icon">🍽️</span>內用
+      </button>
+      <button class="dine-btn" id="btn-外帶" onclick="selectDine('外帶')">
+        <span class="icon">🛍️</span>外帶
+      </button>
     </div>
-    <div class="time-display">取餐時間：<strong id="pickup-time-value">--:--</strong></div>
-    <div class="modal-btns">
-      <button class="modal-cancel" onclick="closeTimeModal()">取消</button>
+
+    <div class="pickup-section" id="pickupSection">
+      <h3>取餐方式</h3>
+      <div class="pickup-btns">
+        <button class="pickup-btn active" id="btn-立即取餐" onclick="selectPickup('立即取餐')">
+          立即取餐
+          <small>15分鐘內</small>
+        </button>
+        <button class="pickup-btn" id="btn-預約取餐" onclick="selectPickup('預約取餐')">
+          預約取餐
+          <small>選擇時間</small>
+        </button>
+      </div>
+
+      <div class="time-section" id="timeSection">
+        <h3>選擇取餐時間</h3>
+        <div class="time-picker-wrap">
+          <div class="scroll-col" id="col-hour"></div>
+          <div class="time-colon">:</div>
+          <div class="scroll-col" id="col-minute"></div>
+        </div>
+        <div class="time-display">取餐時間：<strong id="pickup-time-value">--:--</strong></div>
+      </div>
+    </div>
+
+    <div class="modal-btns" style="margin-top:20px;">
+      <button class="modal-cancel" onclick="closeDineModal()">取消</button>
       <button class="modal-confirm" onclick="submitOrder()">確認下單</button>
     </div>
   </div>
@@ -155,6 +200,8 @@ const urlPhone = new URLSearchParams(window.location.search).get('phone') || ''
 let cart = {}
 let currentItem = null
 let selH = 12, selM = 0
+let dineType = '內用'
+let pickupType = '立即取餐'
 
 function openModal(name, price, type) {
   currentItem = { name, price, type }
@@ -224,8 +271,9 @@ function updateCart() {
   btn.textContent = totalQty > 0 ? '立即下單（' + totalQty + '項）' : '請先選擇餐點'
 }
 
-function openTimeModal() {
-  document.getElementById('timeModalOverlay').classList.add('show')
+function openDineModal() {
+  document.getElementById('dineModalOverlay').classList.add('show')
+  selectDine('內用')
   setTimeout(() => {
     document.getElementById('col-hour').scrollTop = selH * 40
     document.getElementById('col-minute').scrollTop = (selM / 10) * 40
@@ -233,8 +281,23 @@ function openTimeModal() {
   }, 100)
 }
 
-function closeTimeModal() {
-  document.getElementById('timeModalOverlay').classList.remove('show')
+function closeDineModal() {
+  document.getElementById('dineModalOverlay').classList.remove('show')
+}
+
+function selectDine(type) {
+  dineType = type
+  document.getElementById('btn-內用').classList.toggle('active', type === '內用')
+  document.getElementById('btn-外帶').classList.toggle('active', type === '外帶')
+  document.getElementById('pickupSection').style.display = type === '外帶' ? 'block' : 'none'
+  if (type === '外帶') selectPickup('立即取餐')
+}
+
+function selectPickup(type) {
+  pickupType = type
+  document.getElementById('btn-立即取餐').classList.toggle('active', type === '立即取餐')
+  document.getElementById('btn-預約取餐').classList.toggle('active', type === '預約取餐')
+  document.getElementById('timeSection').style.display = type === '預約取餐' ? 'block' : 'none'
 }
 
 function updateTimeDisplay() {
@@ -296,8 +359,17 @@ async function submitOrder() {
     if (!phone || phone.trim() === '') { alert('請輸入電話號碼才能下單！'); return }
     phone = phone.trim()
   }
-  const pickupTime = document.getElementById('pickup-time-value').textContent
-  closeTimeModal()
+
+  let pickupTime = ''
+  if (dineType === '內用') {
+    pickupTime = '內用'
+  } else if (pickupType === '立即取餐') {
+    pickupTime = '外帶－立即取餐'
+  } else {
+    pickupTime = '外帶－' + document.getElementById('pickup-time-value').textContent
+  }
+
+  closeDineModal()
   const btn = document.getElementById('orderBtn')
   btn.disabled = true
   btn.textContent = '送出中...'
