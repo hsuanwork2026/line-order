@@ -236,6 +236,8 @@ async function submitOrder() {
   if (!items.length) return
   const phone = prompt('請輸入您的電話號碼：')
   if (!phone || phone.trim() === '') { alert('請輸入電話號碼才能下單！'); return }
+  const pickupTime = prompt('請輸入預計拿餐時間（例如：12:30）：')
+  if (!pickupTime || pickupTime.trim() === '') { alert('請輸入拿餐時間！'); return }
   const btn = document.getElementById('orderBtn')
   btn.disabled = true
   btn.textContent = '送出中...'
@@ -243,7 +245,7 @@ async function submitOrder() {
   await fetch('/order', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ customerName: phone.trim(), items: orderItems })
+    body: JSON.stringify({ customerName: phone.trim(), items: orderItems, pickupTime: pickupTime.trim() })
   })
   document.getElementById('menuSection').style.display = 'none'
   document.getElementById('cartBar').style.display = 'none'

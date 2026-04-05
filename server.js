@@ -22,6 +22,15 @@ async function initDB() {
       items JSONB,
       total_price INTEGER,
       status TEXT DEFAULT '待處理',
+      pickup_time TEXT,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `)
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS customers (
+      id SERIAL PRIMARY KEY,
+      phone TEXT UNIQUE,
+      line_id TEXT,
       created_at TIMESTAMP DEFAULT NOW()
     )
   `)
@@ -42,33 +51,46 @@ app.post('/webhook', (req, res) => {
     .catch(err => { console.error(err); res.status(500).end() })
 })
 
+// 新增訂單
 app.post('/order', async (req, res) => {
-  const { customerName, items } = req.body
+  const { customerName, items, pickupTime } = req.body
   const totalPrice = items.reduce((sum, i) => sum + i.price, 0)
   await pool.query(
-    'INSERT INTO orders (customer_name, items, total_price) VALUES ($1, $2, $3)',
-    [customerName || 'LINE用戶', JSON.stringify(items), totalPrice]
+    'INSERT INTO orders (customer_name, items, total_price, pickup_time) VALUES ($1, $2, $3, $4)',
+    [customerName || 'LINE用戶', JSON.stringify(items), totalPrice, pickupTime || '']
   )
-
-  // 通知老闆
   const itemList = items.map(i => `・${i.name} $${i.price}`).join('\n')
   await client.pushMessage({
     to: 'U3c74e1a853f680557220e3809302216d',
-    messages: [{ type: 'text', text: `🔔 新訂單！\n\n${itemList}\n\n總計 $${totalPrice}` }]
+    messages: [{ type: 'text', text: `🔔 新訂單！\n電話：${customerName}\n拿餐時間：${pickupTime || '未指定'}\n\n${itemList}\n\n總計 $${totalPrice}` }]
   })
-
   res.json({ success: true })
 })
 
+// 取得所有訂單
 app.get('/orders', async (req, res) => {
   const result = await pool.query('SELECT * FROM orders ORDER BY created_at DESC')
   res.json({ success: true, data: result.rows })
 })
 
+// 更新訂單狀態
 app.patch('/order/:id/status', async (req, res) => {
   const { id } = req.params
   const { status } = req.body
   await pool.query('UPDATE orders SET status = $1 WHERE id = $2', [status, id])
+
+  // 如果完成，通知客人
+  if (status === '完成') {
+    const result = await pool.query('SELECT * FROM orders WHERE id = $1', [id])
+    const order = result.rows[0]
+    const customer = await pool.query('SELECT line_id FROM customers WHERE phone = $1', [order.customer_name])
+    if (customer.rows.length > 0 && customer.rows[0].line_id) {
+      await client.pushMessage({
+        to: customer.rows[0].line_id,
+        messages: [{ type: 'text', text: `✅ 您的餐點已完成！\n請來取餐 🐟\n\n訂單 #${order.id}\n總計 $${order.total_price}` }]
+      })
+    }
+  }
   res.json({ success: true })
 })
 
@@ -95,14 +117,16 @@ const menu = [
 
 async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') return
-  const msg = event.message.text
+  const msg = event.message.text.trim()
+  const userId = event.source.userId
 
   if (msg === '我的ID') {
-  return client.replyMessage({
-    replyToken: event.replyToken,
-    messages: [{ type: 'text', text: '你的ID是：' + event.source.userId }]
-  })
-}
+    return client.replyMessage({
+      replyToken: event.replyToken,
+      messages: [{ type: 'text', text: '你的ID是：' + userId }]
+    })
+  }
+
   if (msg === '菜單' || msg === '點餐') {
     const url = 'https://line-order-production.up.railway.app'
     return client.replyMessage({
@@ -111,8 +135,20 @@ async function handleEvent(event) {
     })
   }
 
+  // 客人傳電話號碼來綁定
+  if (/^09\d{8}$/.test(msg)) {
+    await pool.query(
+      'INSERT INTO customers (phone, line_id) VALUES ($1, $2) ON CONFLICT (phone) DO UPDATE SET line_id = $2',
+      [msg, userId]
+    )
+    return client.replyMessage({
+      replyToken: event.replyToken,
+      messages: [{ type: 'text', text: `✅ 綁定成功！\n電話：${msg}\n\n之後點餐完成時，我們會透過 LINE 通知您取餐 🐟` }]
+    })
+  }
+
   if (msg === '我的訂單') {
-    const result = await pool.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 5')
+    const result = await pool.query('SELECT * FROM orders WHERE customer_name = (SELECT phone FROM customers WHERE line_id = $1) ORDER BY created_at DESC LIMIT 5', [userId])
     if (result.rows.length === 0) {
       return client.replyMessage({
         replyToken: event.replyToken,
@@ -143,7 +179,7 @@ async function handleEvent(event) {
 
   return client.replyMessage({
     replyToken: event.replyToken,
-    messages: [{ type: 'text', text: '您好！輸入「菜單」取得點餐連結 🐟\n或輸入「我的訂單」查看訂單狀態' }]
+    messages: [{ type: 'text', text: '您好！\n📱 傳您的手機號碼給我（如：0912345678）即可綁定 LINE 通知\n\n輸入「菜單」取得點餐連結 🐟\n輸入「我的訂單」查看訂單狀態' }]
   })
 }
 

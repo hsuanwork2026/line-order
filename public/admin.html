@@ -114,6 +114,7 @@ function renderOrders() {
     <div class="order-card status-${order.status}">
       <div class="order-top">
         <span class="order-id">#${order.id} ${order.customer_name}</span>
+        ${order.pickup_time ? `<span style="font-size:13px;color:#e67e22;font-weight:bold">⏰ 拿餐時間：${order.pickup_time}</span>` : ''}
         <span class="badge badge-${order.status}">${order.status}</span>
       </div>
       <div class="order-items">${itemRows}</div>
