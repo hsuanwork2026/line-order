@@ -6,7 +6,7 @@
 <title>巷子裡 𩵚魠魚焿 - 線上點餐</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 200px; }
+body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 .header { background: #2c3e7a; color: white; padding: 20px; text-align: center; }
 .header h1 { font-size: 22px; }
 .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
@@ -21,25 +21,14 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 200px; }
 .qty-num { font-size: 15px; font-weight: bold; min-width: 16px; text-align: center; }
 .cart { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 12px 16px; box-shadow: 0 -2px 12px rgba(0,0,0,0.12); }
 .cart-items { font-size: 13px; color: #888; margin-bottom: 8px; max-height: 40px; overflow: hidden; }
-.cart-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #555; }
+.cart-info { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: #555; }
 .order-btn { background: #2c3e7a; color: white; border: none; border-radius: 8px; width: 100%; padding: 13px; font-size: 16px; font-weight: bold; cursor: pointer; }
 .order-btn:disabled { background: #bbb; }
 .success { text-align: center; padding: 60px 20px; display: none; }
 .success h2 { color: #2c3e7a; font-size: 26px; margin-bottom: 12px; }
 .success p { color: #666; font-size: 15px; }
 
-/* 時間選擇器 */
-.time-picker { padding: 8px 0 10px; border-bottom: 1px solid #eee; margin-bottom: 8px; }
-.time-picker-label { font-size: 14px; color: #555; margin-bottom: 8px; text-align: center; }
-.time-picker-wrap { display: flex; align-items: center; justify-content: center; gap: 0; }
-.scroll-col { height: 120px; overflow-y: scroll; width: 64px; text-align: center; border: 1.5px solid #ddd; border-radius: 8px; scroll-snap-type: y mandatory; -webkit-overflow-scrolling: touch; }
-.scroll-col::-webkit-scrollbar { display: none; }
-.time-slot { height: 40px; line-height: 40px; font-size: 22px; scroll-snap-align: center; cursor: pointer; color: #bbb; transition: color 0.1s; }
-.time-slot.selected { color: #2c3e7a; font-weight: bold; }
-.time-colon { font-size: 28px; font-weight: bold; padding: 0 8px; color: #2c3e7a; }
-.time-display { text-align: center; margin-top: 8px; font-size: 15px; color: #2c3e7a; font-weight: bold; }
-
-/* Modal */
+/* 特殊需求 Modal */
 .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 100; display: none; align-items: flex-end; }
 .modal-overlay.show { display: flex; }
 .modal { background: white; border-radius: 16px 16px 0 0; padding: 20px; width: 100%; max-height: 80vh; overflow-y: auto; }
@@ -54,6 +43,18 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 200px; }
 .modal-btns { display: flex; gap: 10px; margin-top: 16px; }
 .modal-cancel { flex: 1; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px; background: white; font-size: 15px; cursor: pointer; color: #666; }
 .modal-confirm { flex: 2; padding: 12px; border: none; border-radius: 8px; background: #2c3e7a; color: white; font-size: 15px; font-weight: bold; cursor: pointer; }
+
+/* 時間選擇 Modal */
+.time-modal { background: white; border-radius: 16px 16px 0 0; padding: 24px 20px; width: 100%; }
+.time-modal h2 { font-size: 18px; color: #2c3e7a; margin-bottom: 20px; text-align: center; }
+.time-picker-wrap { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 20px; }
+.scroll-col { height: 160px; overflow-y: scroll; width: 80px; text-align: center; border: 1.5px solid #ddd; border-radius: 10px; scroll-snap-type: y mandatory; -webkit-overflow-scrolling: touch; }
+.scroll-col::-webkit-scrollbar { display: none; }
+.time-slot { height: 40px; line-height: 40px; font-size: 24px; scroll-snap-align: center; cursor: pointer; color: #bbb; }
+.time-slot.selected { color: #2c3e7a; font-weight: bold; font-size: 28px; }
+.time-colon { font-size: 32px; font-weight: bold; padding: 0 12px; color: #2c3e7a; }
+.time-display { text-align: center; font-size: 16px; color: #555; margin-bottom: 20px; }
+.time-display strong { color: #2c3e7a; font-size: 20px; }
 </style>
 </head>
 <body>
@@ -64,7 +65,6 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 200px; }
 </div>
 
 <div class="menu" id="menuSection">
-
   <div class="category">🐟 𩵚魠魚焿</div>
   <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 焿</h3></div><div class="item-right"><span class="item-price">$90</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('𩵚魠魚焿(焿)', 90)">−</button><span class="qty-num" id="qty-𩵚魠魚焿(焿)">0</span><button class="qty-btn" onclick="openModal('𩵚魠魚焿(焿)', 90, '焿')">+</button></div></div></div>
   <div class="menu-item"><div class="item-info"><h3>𩵚魠魚焿 - 飯</h3></div><div class="item-right"><span class="item-price">$100</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('𩵚魠魚焿(飯)', 100)">−</button><span class="qty-num" id="qty-𩵚魠魚焿(飯)">0</span><button class="qty-btn" onclick="openModal('𩵚魠魚焿(飯)', 100, '飯')">+</button></div></div></div>
@@ -90,7 +90,6 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 200px; }
   <div class="menu-item"><div class="item-info"><h3>肉燥飯</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('肉燥飯', 50)">−</button><span class="qty-num" id="qty-肉燥飯">0</span><button class="qty-btn" onclick="openModal('肉燥飯', 50, '飯')">+</button></div></div></div>
   <div class="menu-item"><div class="item-info"><h3>燙青菜</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('燙青菜', 50)">−</button><span class="qty-num" id="qty-燙青菜">0</span><button class="qty-btn" onclick="openModal('燙青菜', 50, '其他')">+</button></div></div></div>
   <div class="menu-item"><div class="item-info"><h3>滷蛋</h3></div><div class="item-right"><span class="item-price">$15</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('滷蛋', 15)">−</button><span class="qty-num" id="qty-滷蛋">0</span><button class="qty-btn" onclick="openModal('滷蛋', 15, '其他')">+</button></div></div></div>
-
 </div>
 
 <div class="success" id="success">
@@ -104,16 +103,7 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 200px; }
     <span>已選 <strong id="count">0</strong> 項</span>
     <span>總計 <strong id="total">$0</strong></span>
   </div>
-  <div class="time-picker">
-    <div class="time-picker-label">⏰ 選擇取餐時間</div>
-    <div class="time-picker-wrap">
-      <div class="scroll-col" id="col-hour"></div>
-      <div class="time-colon">:</div>
-      <div class="scroll-col" id="col-minute"></div>
-    </div>
-    <div class="time-display">取餐時間：<span id="pickup-time-value">--:--</span></div>
-  </div>
-  <button class="order-btn" id="orderBtn" onclick="submitOrder()" disabled>請先選擇餐點</button>
+  <button class="order-btn" id="orderBtn" onclick="openTimeModal()" disabled>請先選擇餐點</button>
 </div>
 
 <!-- 特殊需求 Modal -->
@@ -143,10 +133,28 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 200px; }
   </div>
 </div>
 
+<!-- 取餐時間 Modal -->
+<div class="modal-overlay" id="timeModalOverlay">
+  <div class="time-modal">
+    <h2>⏰ 選擇取餐時間</h2>
+    <div class="time-picker-wrap">
+      <div class="scroll-col" id="col-hour"></div>
+      <div class="time-colon">:</div>
+      <div class="scroll-col" id="col-minute"></div>
+    </div>
+    <div class="time-display">取餐時間：<strong id="pickup-time-value">--:--</strong></div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeTimeModal()">取消</button>
+      <button class="modal-confirm" onclick="submitOrder()">確認下單</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const urlPhone = new URLSearchParams(window.location.search).get('phone') || ''
 let cart = {}
 let currentItem = null
+let selH = 12, selM = 0
 
 function openModal(name, price, type) {
   currentItem = { name, price, type }
@@ -154,7 +162,7 @@ function openModal(name, price, type) {
   document.getElementById('modalPrice').textContent = '$' + price
   document.getElementById('section-飯').style.display = (type === '飯') ? 'block' : 'none'
   document.getElementById('section-麵').style.display = (type === '麵' || type === '米粉') ? 'block' : 'none'
-  document.querySelectorAll('.modal input[type=checkbox]').forEach(c => c.checked = false)
+  document.querySelectorAll('#modalOverlay input[type=checkbox]').forEach(c => c.checked = false)
   document.getElementById('modalOverlay').classList.add('show')
 }
 
@@ -188,7 +196,7 @@ function confirmAdd() {
   closeModal()
 }
 
-function removeItem(name, price) {
+function removeItem(name) {
   const keys = Object.keys(cart).filter(k => k.startsWith(name))
   if (keys.length === 0) return
   const lastKey = keys[keys.length - 1]
@@ -216,6 +224,69 @@ function updateCart() {
   btn.textContent = totalQty > 0 ? '立即下單（' + totalQty + '項）' : '請先選擇餐點'
 }
 
+function openTimeModal() {
+  document.getElementById('timeModalOverlay').classList.add('show')
+  setTimeout(() => {
+    document.getElementById('col-hour').scrollTop = selH * 40
+    document.getElementById('col-minute').scrollTop = (selM / 10) * 40
+    updateTimeDisplay()
+  }, 100)
+}
+
+function closeTimeModal() {
+  document.getElementById('timeModalOverlay').classList.remove('show')
+}
+
+function updateTimeDisplay() {
+  const hh = String(selH).padStart(2, '0')
+  const mm = String(selM).padStart(2, '0')
+  document.getElementById('pickup-time-value').textContent = hh + ':' + mm
+  document.getElementById('col-hour').querySelectorAll('.time-slot').forEach(e => e.classList.toggle('selected', parseInt(e.dataset.val) === selH))
+  document.getElementById('col-minute').querySelectorAll('.time-slot').forEach(e => e.classList.toggle('selected', parseInt(e.dataset.val) === selM))
+}
+
+function initTimePicker() {
+  const hourCol = document.getElementById('col-hour')
+  const minCol = document.getElementById('col-minute')
+  const now = new Date()
+  selH = now.getHours()
+  selM = Math.ceil(now.getMinutes() / 10) * 10
+  if (selM >= 60) { selM = 0; selH = Math.min(selH + 1, 23) }
+
+  for (let h = 0; h < 24; h++) {
+    const el = document.createElement('div')
+    el.className = 'time-slot'
+    el.textContent = String(h).padStart(2, '0')
+    el.dataset.val = h
+    hourCol.appendChild(el)
+  }
+  for (let m = 0; m < 60; m += 10) {
+    const el = document.createElement('div')
+    el.className = 'time-slot'
+    el.textContent = String(m).padStart(2, '0')
+    el.dataset.val = m
+    minCol.appendChild(el)
+  }
+
+  let hTimer, mTimer
+  hourCol.addEventListener('scroll', () => {
+    clearTimeout(hTimer)
+    hTimer = setTimeout(() => {
+      selH = Math.round(hourCol.scrollTop / 40)
+      hourCol.scrollTop = selH * 40
+      updateTimeDisplay()
+    }, 150)
+  })
+  minCol.addEventListener('scroll', () => {
+    clearTimeout(mTimer)
+    mTimer = setTimeout(() => {
+      selM = Math.round(minCol.scrollTop / 40) * 10
+      minCol.scrollTop = (selM / 10) * 40
+      updateTimeDisplay()
+    }, 150)
+  })
+}
+
 async function submitOrder() {
   const items = Object.values(cart).filter(i => i.qty > 0)
   if (!items.length) return
@@ -226,7 +297,7 @@ async function submitOrder() {
     phone = phone.trim()
   }
   const pickupTime = document.getElementById('pickup-time-value').textContent
-  if (pickupTime === '--:--') { alert('請選擇取餐時間！'); return }
+  closeTimeModal()
   const btn = document.getElementById('orderBtn')
   btn.disabled = true
   btn.textContent = '送出中...'
@@ -239,62 +310,6 @@ async function submitOrder() {
   document.getElementById('menuSection').style.display = 'none'
   document.getElementById('cartBar').style.display = 'none'
   document.getElementById('success').style.display = 'block'
-}
-
-function initTimePicker() {
-  const hourCol = document.getElementById('col-hour')
-  const minCol = document.getElementById('col-minute')
-  const now = new Date()
-  let selH = now.getHours()
-  let selM = Math.ceil(now.getMinutes() / 10) * 10
-  if (selM >= 60) { selM = 0; selH = Math.min(selH + 1, 23) }
-
-  for (let h = 0; h < 24; h++) {
-    const el = document.createElement('div')
-    el.className = 'time-slot' + (h === selH ? ' selected' : '')
-    el.textContent = String(h).padStart(2, '0')
-    el.dataset.val = h
-    hourCol.appendChild(el)
-  }
-  for (let m = 0; m < 60; m += 10) {
-    const el = document.createElement('div')
-    el.className = 'time-slot' + (m === selM ? ' selected' : '')
-    el.textContent = String(m).padStart(2, '0')
-    el.dataset.val = m
-    minCol.appendChild(el)
-  }
-
-  function updateTime() {
-    const hh = String(selH).padStart(2, '0')
-    const mm = String(selM).padStart(2, '0')
-    document.getElementById('pickup-time-value').textContent = hh + ':' + mm
-    hourCol.querySelectorAll('.time-slot').forEach(e => e.classList.toggle('selected', parseInt(e.dataset.val) === selH))
-    minCol.querySelectorAll('.time-slot').forEach(e => e.classList.toggle('selected', parseInt(e.dataset.val) === selM))
-  }
-
-  let hTimer, mTimer
-  hourCol.addEventListener('scroll', () => {
-    clearTimeout(hTimer)
-    hTimer = setTimeout(() => {
-      selH = Math.round(hourCol.scrollTop / 40)
-      hourCol.scrollTop = selH * 40
-      updateTime()
-    }, 100)
-  })
-  minCol.addEventListener('scroll', () => {
-    clearTimeout(mTimer)
-    mTimer = setTimeout(() => {
-      selM = Math.round(minCol.scrollTop / 40) * 10
-      minCol.scrollTop = (selM / 10) * 40
-      updateTime()
-    }, 100)
-  })
-
-  setTimeout(() => {
-    hourCol.scrollTop = selH * 40
-    minCol.scrollTop = (selM / 10) * 40
-    updateTime()
-  }, 100)
 }
 
 initTimePicker()
