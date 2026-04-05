@@ -124,16 +124,18 @@ async function handleEvent(event) {
 
   if (msg === '菜單' || msg === '點餐') {
     const customer = await pool.query('SELECT phone FROM customers WHERE line_id = $1', [userId])
-    let url = 'https://line-order-production.up.railway.app'
-    let extra = '點擊連結即可選餐下單！'
     if (customer.rows.length > 0) {
-      url = `https://line-order-production.up.railway.app?phone=${customer.rows[0].phone}`
-      extra = '點擊專屬連結即可直接點餐，不需輸入電話！'
+      const url = `https://line-order-production.up.railway.app?phone=${customer.rows[0].phone}`
+      return client.replyMessage({
+        replyToken: event.replyToken,
+        messages: [{ type: 'text', text: `🐟 巷子裡 𩵚魠魚焿 線上點餐：\n\n${url}\n\n點擊專屬連結即可直接點餐，不需輸入電話！` }]
+      })
+    } else {
+      return client.replyMessage({
+        replyToken: event.replyToken,
+        messages: [{ type: 'text', text: `🐟 巷子裡 𩵚魠魚焿 線上點餐：\n\nhttps://line-order-production.up.railway.app\n\n💡 想要點餐完成時收到通知嗎？\n傳您的手機號碼給我（如：0912345678）即可綁定！` }]
+      })
     }
-    return client.replyMessage({
-      replyToken: event.replyToken,
-      messages: [{ type: 'text', text: `🐟 巷子裡 𩵚魠魚焿 線上點餐：\n\n${url}\n\n${extra}` }]
-    })
   }
 
   if (/^09\d{8}$/.test(msg)) {
@@ -182,9 +184,9 @@ async function handleEvent(event) {
   }
 
   return client.replyMessage({
-  replyToken: event.replyToken,
-  messages: [{ type: 'text', text: '您好！\n\n🔗 點餐連結：\nhttps://line-order-production.up.railway.app\n\n💡 傳您的手機號碼給我（如：0912345678）\n綁定後下次點餐不需輸入電話，完成時也會通知您！\n\n輸入「我的訂單」查看訂單狀態' }]
-})
+    replyToken: event.replyToken,
+    messages: [{ type: 'text', text: `您好！\n\n🔗 點餐連結：\nhttps://line-order-production.up.railway.app\n\n💡 傳您的手機號碼給我（如：0912345678）\n綁定後下次點餐不需輸入電話，完成時也會通知您！\n\n輸入「我的訂單」查看訂單狀態` }]
+  })
 }
 
 app.listen(3000, async () => {
