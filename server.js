@@ -141,10 +141,11 @@ async function handleEvent(event) {
       'INSERT INTO customers (phone, line_id) VALUES ($1, $2) ON CONFLICT (phone) DO UPDATE SET line_id = $2',
       [msg, userId]
     )
-    return client.replyMessage({
-      replyToken: event.replyToken,
-      messages: [{ type: 'text', text: `✅ 綁定成功！\n電話：${msg}\n\n之後點餐完成時，我們會透過 LINE 通知您取餐 🐟` }]
-    })
+    const orderUrl = `https://line-order-production.up.railway.app?phone=${msg}`
+return client.replyMessage({
+  replyToken: event.replyToken,
+  messages: [{ type: 'text', text: `✅ 綁定成功！\n電話：${msg}\n\n🔗 您的專屬點餐連結：\n${orderUrl}\n\n點擊連結即可直接點餐，不需再輸入電話！` }]
+})
   }
 
   if (msg === '我的訂單') {
