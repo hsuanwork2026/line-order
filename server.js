@@ -182,9 +182,9 @@ async function handleEvent(event) {
   }
 
   return client.replyMessage({
-    replyToken: event.replyToken,
-    messages: [{ type: 'text', text: '您好！\n📱 傳您的手機號碼給我（如：0912345678）即可綁定 LINE 通知\n\n輸入「菜單」取得點餐連結 🐟\n輸入「我的訂單」查看訂單狀態' }]
-  })
+  replyToken: event.replyToken,
+  messages: [{ type: 'text', text: '您好！\n\n🔗 點餐連結：\nhttps://line-order-production.up.railway.app\n\n💡 傳您的手機號碼給我（如：0912345678）\n綁定後下次點餐不需輸入電話，完成時也會通知您！\n\n輸入「我的訂單」查看訂單狀態' }]
+})
 }
 
 app.listen(3000, async () => {
