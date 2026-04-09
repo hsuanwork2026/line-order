@@ -58,11 +58,23 @@ app.post('/order', async (req, res) => {
     'INSERT INTO orders (customer_name, items, total_price, pickup_time) VALUES ($1, $2, $3, $4)',
     [customerName || 'LINE用戶', JSON.stringify(items), totalPrice, pickupTime || '']
   )
+
+  // 通知老闆
   const itemList = items.map(i => `・${i.name} $${i.price}`).join('\n')
   await client.pushMessage({
     to: 'U3c74e1a853f680557220e3809302216d',
-    messages: [{ type: 'text', text: `🔔 新訂單！\n電話：${customerName}\n拿餐時間：${pickupTime || '未指定'}\n\n${itemList}\n\n總計 $${totalPrice}` }]
+    messages: [{ type: 'text', text: `🔔 新訂單！\n電話：${customerName}\n取餐方式：${pickupTime || '未指定'}\n\n${itemList}\n\n總計 $${totalPrice}` }]
   })
+
+  // 通知客人訂單內容
+  const customer = await pool.query('SELECT line_id FROM customers WHERE phone = $1', [customerName])
+  if (customer.rows.length > 0 && customer.rows[0].line_id) {
+    await client.pushMessage({
+      to: customer.rows[0].line_id,
+      messages: [{ type: 'text', text: `✅ 已收到您的訂單！\n取餐方式：${pickupTime}\n\n${itemList}\n\n總計 $${totalPrice}\n\n請稍候，我們正在為您準備 🐟` }]
+    })
+  }
+
   res.json({ success: true })
 })
 
@@ -151,23 +163,33 @@ async function handleEvent(event) {
   }
 
   if (msg === '我的訂單') {
-    const result = await pool.query(
-      'SELECT * FROM orders WHERE customer_name = (SELECT phone FROM customers WHERE line_id = $1) ORDER BY created_at DESC LIMIT 5',
-      [userId]
-    )
+    const result = await pool.query(`
+      SELECT * FROM orders
+      WHERE customer_name = (SELECT phone FROM customers WHERE line_id = $1)
+      AND (status != '完成' AND status != '取消'
+        OR id = (
+          SELECT id FROM orders
+          WHERE customer_name = (SELECT phone FROM customers WHERE line_id = $1)
+          AND status = '完成'
+          ORDER BY created_at DESC LIMIT 1
+        )
+      )
+      ORDER BY created_at DESC
+    `, [userId])
+
     if (result.rows.length === 0) {
       return client.replyMessage({
         replyToken: event.replyToken,
-        messages: [{ type: 'text', text: '您還沒有任何訂單！' }]
+        messages: [{ type: 'text', text: '您目前沒有進行中的訂單！' }]
       })
     }
     const text = result.rows.map(o => {
       const itemList = o.items.map(i => `${i.name} $${i.price}`).join('、')
-      return `#${o.id} ${itemList} 共$${o.total_price} - ${o.status}`
-    }).join('\n')
+      return `#${o.id} ${itemList} 共$${o.total_price}\n狀態：${o.status} | ${o.pickup_time || ''}`
+    }).join('\n\n')
     return client.replyMessage({
       replyToken: event.replyToken,
-      messages: [{ type: 'text', text: `📦 最近訂單：\n\n${text}` }]
+      messages: [{ type: 'text', text: `📦 我的訂單：\n\n${text}` }]
     })
   }
 

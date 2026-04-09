@@ -33,6 +33,7 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 .modal-overlay.show { display: flex; }
 .modal { background: white; border-radius: 16px 16px 0 0; padding: 20px; width: 100%; max-height: 85vh; overflow-y: auto; }
 .modal h2 { font-size: 18px; color: #2c3e7a; margin-bottom: 4px; }
+.modal .subtitle { font-size: 13px; color: #aaa; margin-bottom: 4px; }
 .modal .price { color: #c0392b; font-weight: bold; font-size: 16px; margin-bottom: 16px; }
 .modal-section { margin-bottom: 16px; }
 .modal-section h3 { font-size: 14px; color: #888; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
@@ -43,16 +44,15 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 .modal-btns { display: flex; gap: 10px; margin-top: 16px; }
 .modal-cancel { flex: 1; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px; background: white; font-size: 15px; cursor: pointer; color: #666; }
 .modal-confirm { flex: 2; padding: 12px; border: none; border-radius: 8px; background: #2c3e7a; color: white; font-size: 15px; font-weight: bold; cursor: pointer; }
+.note-input { width: 100%; padding: 10px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px; margin-top: 8px; resize: none; }
 
-/* 內用外帶選擇 */
+/* 內用外帶 Modal */
 .dine-modal { background: white; border-radius: 16px 16px 0 0; padding: 24px 20px; width: 100%; }
 .dine-modal h2 { font-size: 20px; color: #2c3e7a; margin-bottom: 24px; text-align: center; }
 .dine-btns { display: flex; gap: 12px; margin-bottom: 16px; }
-.dine-btn { flex: 1; padding: 20px 10px; border: 2px solid #ddd; border-radius: 12px; background: white; font-size: 17px; font-weight: bold; color: #555; cursor: pointer; text-align: center; transition: all 0.2s; }
+.dine-btn { flex: 1; padding: 20px 10px; border: 2px solid #ddd; border-radius: 12px; background: white; font-size: 17px; font-weight: bold; color: #555; cursor: pointer; text-align: center; }
 .dine-btn.active { border-color: #2c3e7a; background: #eef2ff; color: #2c3e7a; }
 .dine-btn .icon { font-size: 28px; display: block; margin-bottom: 6px; }
-
-/* 取餐方式選擇 */
 .pickup-section { margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; display: none; }
 .pickup-section h3 { font-size: 16px; color: #333; margin-bottom: 14px; }
 .pickup-btns { display: flex; gap: 10px; margin-bottom: 16px; }
@@ -67,7 +67,7 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 .time-picker-wrap { display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 12px; }
 .scroll-col { height: 160px; overflow-y: scroll; width: 80px; text-align: center; border: 1.5px solid #ddd; border-radius: 10px; scroll-snap-type: y mandatory; -webkit-overflow-scrolling: touch; }
 .scroll-col::-webkit-scrollbar { display: none; }
-.time-slot { height: 40px; line-height: 40px; font-size: 24px; scroll-snap-align: center; cursor: pointer; color: #bbb; }
+.time-slot { height: 40px; line-height: 40px; font-size: 24px; scroll-snap-align: center; color: #bbb; }
 .time-slot.selected { color: #2c3e7a; font-weight: bold; font-size: 28px; }
 .time-colon { font-size: 32px; font-weight: bold; padding: 0 12px; color: #2c3e7a; }
 .time-display { text-align: center; font-size: 15px; color: #555; margin-bottom: 4px; }
@@ -105,8 +105,8 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
   <div class="menu-item"><div class="item-info"><h3>乾米粉</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('乾米粉')">−</button><span class="qty-num" id="qty-乾米粉">0</span><button class="qty-btn" onclick="openModal('乾米粉', 50, '米粉')">+</button></div></div></div>
   <div class="menu-item"><div class="item-info"><h3>乾板條</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('乾板條')">−</button><span class="qty-num" id="qty-乾板條">0</span><button class="qty-btn" onclick="openModal('乾板條', 50, '麵')">+</button></div></div></div>
   <div class="menu-item"><div class="item-info"><h3>肉燥飯</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('肉燥飯')">−</button><span class="qty-num" id="qty-肉燥飯">0</span><button class="qty-btn" onclick="openModal('肉燥飯', 50, '飯')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>燙青菜</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('燙青菜')">−</button><span class="qty-num" id="qty-燙青菜">0</span><button class="qty-btn" onclick="openModal('燙青菜', 50, '其他')">+</button></div></div></div>
-  <div class="menu-item"><div class="item-info"><h3>滷蛋</h3></div><div class="item-right"><span class="item-price">$15</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('滷蛋')">−</button><span class="qty-num" id="qty-滷蛋">0</span><button class="qty-btn" onclick="openModal('滷蛋', 15, '其他')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>燙青菜</h3></div><div class="item-right"><span class="item-price">$50</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('燙青菜')">−</button><span class="qty-num" id="qty-燙青菜">0</span><button class="qty-btn" onclick="openModal('燙青菜', 50, '小菜')">+</button></div></div></div>
+  <div class="menu-item"><div class="item-info"><h3>滷蛋</h3></div><div class="item-right"><span class="item-price">$15</span><div class="qty-control"><button class="qty-btn minus" onclick="removeItem('滷蛋')">−</button><span class="qty-num" id="qty-滷蛋">0</span><button class="qty-btn" onclick="openModal('滷蛋', 15, '小菜')">+</button></div></div></div>
 </div>
 
 <div class="success" id="success">
@@ -127,8 +127,9 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal">
     <h2 id="modalName"></h2>
+    <div class="subtitle">配料請選擇，未選擇則默認不加</div>
     <div class="price" id="modalPrice"></div>
-    <div class="modal-section">
+    <div class="modal-section" id="section-免費">
       <h3>免費加料</h3>
       <div class="option-item"><label><input type="checkbox" id="opt-香菜"> 香菜</label><span class="option-price">免費</span></div>
       <div class="option-item"><label><input type="checkbox" id="opt-蒜泥"> 蒜泥</label><span class="option-price">免費</span></div>
@@ -143,6 +144,10 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
       <h3>加麵</h3>
       <div class="option-item"><label><input type="checkbox" id="opt-加麵"> 加麵</label><span class="option-price">+$10</span></div>
     </div>
+    <div class="modal-section">
+      <h3>備註</h3>
+      <textarea class="note-input" id="opt-備註" rows="2" placeholder="例如：不要辣、少鹽..."></textarea>
+    </div>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeModal()">取消</button>
       <button class="modal-confirm" onclick="confirmAdd()">加入購物車</button>
@@ -150,11 +155,10 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
   </div>
 </div>
 
-<!-- 內用外帶 + 取餐方式 Modal -->
+<!-- 內用外帶 Modal -->
 <div class="modal-overlay" id="dineModalOverlay">
   <div class="dine-modal">
     <h2>選擇用餐方式</h2>
-
     <div class="dine-btns">
       <button class="dine-btn active" id="btn-內用" onclick="selectDine('內用')">
         <span class="icon">🍽️</span>內用
@@ -164,25 +168,34 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
       </button>
     </div>
 
+    <!-- 內用時間 -->
+    <div class="time-section" id="dineTimeSection" style="display:block">
+      <h3>選擇內用時間</h3>
+      <div class="time-picker-wrap">
+        <div class="scroll-col" id="col-dine-hour"></div>
+        <div class="time-colon">:</div>
+        <div class="scroll-col" id="col-dine-minute"></div>
+      </div>
+      <div class="time-display">內用時間：<strong id="dine-time-value">--:--</strong></div>
+    </div>
+
+    <!-- 外帶取餐方式 -->
     <div class="pickup-section" id="pickupSection">
       <h3>取餐方式</h3>
       <div class="pickup-btns">
         <button class="pickup-btn active" id="btn-立即取餐" onclick="selectPickup('立即取餐')">
-          立即取餐
-          <small>15分鐘內</small>
+          立即取餐<small>15分鐘內</small>
         </button>
         <button class="pickup-btn" id="btn-預約取餐" onclick="selectPickup('預約取餐')">
-          預約取餐
-          <small>選擇時間</small>
+          預約取餐<small>選擇時間</small>
         </button>
       </div>
-
-      <div class="time-section" id="timeSection">
+      <div class="time-section" id="pickupTimeSection">
         <h3>選擇取餐時間</h3>
         <div class="time-picker-wrap">
-          <div class="scroll-col" id="col-hour"></div>
+          <div class="scroll-col" id="col-pickup-hour"></div>
           <div class="time-colon">:</div>
-          <div class="scroll-col" id="col-minute"></div>
+          <div class="scroll-col" id="col-pickup-minute"></div>
         </div>
         <div class="time-display">取餐時間：<strong id="pickup-time-value">--:--</strong></div>
       </div>
@@ -199,17 +212,22 @@ body { font-family: sans-serif; background: #f5f5f5; padding-bottom: 120px; }
 const urlPhone = new URLSearchParams(window.location.search).get('phone') || ''
 let cart = {}
 let currentItem = null
-let selH = 12, selM = 0
 let dineType = '內用'
 let pickupType = '立即取餐'
+let selDineH = 12, selDineM = 0
+let selPickupH = 12, selPickupM = 0
 
 function openModal(name, price, type) {
   currentItem = { name, price, type }
   document.getElementById('modalName').textContent = name
   document.getElementById('modalPrice').textContent = '$' + price
+  // 小菜類不顯示免費加料
+  const isSnack = (type === '小菜')
+  document.getElementById('section-免費').style.display = isSnack ? 'none' : 'block'
   document.getElementById('section-飯').style.display = (type === '飯') ? 'block' : 'none'
   document.getElementById('section-麵').style.display = (type === '麵' || type === '米粉') ? 'block' : 'none'
   document.querySelectorAll('#modalOverlay input[type=checkbox]').forEach(c => c.checked = false)
+  document.getElementById('opt-備註').value = ''
   document.getElementById('modalOverlay').classList.add('show')
 }
 
@@ -223,16 +241,22 @@ function confirmAdd() {
   const { name, price, type } = currentItem
   const extras = []
   let extraPrice = 0
-  if (document.getElementById('opt-香菜').checked) extras.push('加香菜')
-  if (document.getElementById('opt-蒜泥').checked) extras.push('加蒜泥')
-  if (document.getElementById('opt-醋').checked) extras.push('加醋')
-  if (document.getElementById('opt-胡椒粉').checked) extras.push('加胡椒粉')
+  const isSnack = (type === '小菜')
+  if (!isSnack) {
+    if (document.getElementById('opt-香菜').checked) extras.push('加香菜')
+    if (document.getElementById('opt-蒜泥').checked) extras.push('加蒜泥')
+    if (document.getElementById('opt-醋').checked) extras.push('加醋')
+    if (document.getElementById('opt-胡椒粉').checked) extras.push('加胡椒粉')
+  }
   if (document.getElementById('opt-加飯') && document.getElementById('opt-加飯').checked) { extras.push('加飯'); extraPrice += 10 }
   if (document.getElementById('opt-加麵') && document.getElementById('opt-加麵').checked) { extras.push('加麵'); extraPrice += 10 }
+  const note = document.getElementById('opt-備註').value.trim()
+  if (note) extras.push('備註：' + note)
+
   const finalPrice = price + extraPrice
-  const note = extras.length > 0 ? '（' + extras.join('・') + '）' : ''
-  const key = name + note
-  if (!cart[key]) cart[key] = { name, note, price: finalPrice, qty: 0 }
+  const noteStr = extras.length > 0 ? '（' + extras.join('・') + '）' : ''
+  const key = name + noteStr
+  if (!cart[key]) cart[key] = { name, note: noteStr, price: finalPrice, qty: 0 }
   cart[key].qty += 1
   const el = document.getElementById('qty-' + name)
   if (el) {
@@ -275,9 +299,12 @@ function openDineModal() {
   document.getElementById('dineModalOverlay').classList.add('show')
   selectDine('內用')
   setTimeout(() => {
-    document.getElementById('col-hour').scrollTop = selH * 40
-    document.getElementById('col-minute').scrollTop = (selM / 10) * 40
-    updateTimeDisplay()
+    document.getElementById('col-dine-hour').scrollTop = selDineH * 40
+    document.getElementById('col-dine-minute').scrollTop = (selDineM / 15) * 40
+    updateDineTime()
+    document.getElementById('col-pickup-hour').scrollTop = selPickupH * 40
+    document.getElementById('col-pickup-minute').scrollTop = (selPickupM / 15) * 40
+    updatePickupTime()
   }, 100)
 }
 
@@ -289,6 +316,7 @@ function selectDine(type) {
   dineType = type
   document.getElementById('btn-內用').classList.toggle('active', type === '內用')
   document.getElementById('btn-外帶').classList.toggle('active', type === '外帶')
+  document.getElementById('dineTimeSection').style.display = type === '內用' ? 'block' : 'none'
   document.getElementById('pickupSection').style.display = type === '外帶' ? 'block' : 'none'
   if (type === '外帶') selectPickup('立即取餐')
 }
@@ -297,25 +325,28 @@ function selectPickup(type) {
   pickupType = type
   document.getElementById('btn-立即取餐').classList.toggle('active', type === '立即取餐')
   document.getElementById('btn-預約取餐').classList.toggle('active', type === '預約取餐')
-  document.getElementById('timeSection').style.display = type === '預約取餐' ? 'block' : 'none'
+  document.getElementById('pickupTimeSection').style.display = type === '預約取餐' ? 'block' : 'none'
 }
 
-function updateTimeDisplay() {
-  const hh = String(selH).padStart(2, '0')
-  const mm = String(selM).padStart(2, '0')
+function updateDineTime() {
+  const hh = String(selDineH).padStart(2, '0')
+  const mm = String(selDineM).padStart(2, '0')
+  document.getElementById('dine-time-value').textContent = hh + ':' + mm
+  document.getElementById('col-dine-hour').querySelectorAll('.time-slot').forEach(e => e.classList.toggle('selected', parseInt(e.dataset.val) === selDineH))
+  document.getElementById('col-dine-minute').querySelectorAll('.time-slot').forEach(e => e.classList.toggle('selected', parseInt(e.dataset.val) === selDineM))
+}
+
+function updatePickupTime() {
+  const hh = String(selPickupH).padStart(2, '0')
+  const mm = String(selPickupM).padStart(2, '0')
   document.getElementById('pickup-time-value').textContent = hh + ':' + mm
-  document.getElementById('col-hour').querySelectorAll('.time-slot').forEach(e => e.classList.toggle('selected', parseInt(e.dataset.val) === selH))
-  document.getElementById('col-minute').querySelectorAll('.time-slot').forEach(e => e.classList.toggle('selected', parseInt(e.dataset.val) === selM))
+  document.getElementById('col-pickup-hour').querySelectorAll('.time-slot').forEach(e => e.classList.toggle('selected', parseInt(e.dataset.val) === selPickupH))
+  document.getElementById('col-pickup-minute').querySelectorAll('.time-slot').forEach(e => e.classList.toggle('selected', parseInt(e.dataset.val) === selPickupM))
 }
 
-function initTimePicker() {
-  const hourCol = document.getElementById('col-hour')
-  const minCol = document.getElementById('col-minute')
-  const now = new Date()
-  selH = now.getHours()
-  selM = Math.ceil(now.getMinutes() / 10) * 10
-  if (selM >= 60) { selM = 0; selH = Math.min(selH + 1, 23) }
-
+function buildTimePicker(hourColId, minColId, initH, initM, onHChange, onMChange) {
+  const hourCol = document.getElementById(hourColId)
+  const minCol = document.getElementById(minColId)
   for (let h = 0; h < 24; h++) {
     const el = document.createElement('div')
     el.className = 'time-slot'
@@ -323,31 +354,48 @@ function initTimePicker() {
     el.dataset.val = h
     hourCol.appendChild(el)
   }
-  for (let m = 0; m < 60; m += 10) {
+  for (let m = 0; m < 60; m += 15) {
     const el = document.createElement('div')
     el.className = 'time-slot'
     el.textContent = String(m).padStart(2, '0')
     el.dataset.val = m
     minCol.appendChild(el)
   }
-
   let hTimer, mTimer
   hourCol.addEventListener('scroll', () => {
     clearTimeout(hTimer)
     hTimer = setTimeout(() => {
-      selH = Math.round(hourCol.scrollTop / 40)
-      hourCol.scrollTop = selH * 40
-      updateTimeDisplay()
+      const val = Math.round(hourCol.scrollTop / 40)
+      hourCol.scrollTop = val * 40
+      onHChange(val)
     }, 150)
   })
   minCol.addEventListener('scroll', () => {
     clearTimeout(mTimer)
     mTimer = setTimeout(() => {
-      selM = Math.round(minCol.scrollTop / 40) * 10
-      minCol.scrollTop = (selM / 10) * 40
-      updateTimeDisplay()
+      const idx = Math.round(minCol.scrollTop / 40)
+      minCol.scrollTop = idx * 40
+      onMChange(idx * 15)
     }, 150)
   })
+}
+
+function initTimePickers() {
+  const now = new Date()
+  selDineH = now.getHours()
+  selDineM = Math.ceil(now.getMinutes() / 15) * 15
+  if (selDineM >= 60) { selDineM = 0; selDineH = Math.min(selDineH + 1, 23) }
+  selPickupH = selDineH
+  selPickupM = selDineM
+
+  buildTimePicker('col-dine-hour', 'col-dine-minute', selDineH, selDineM,
+    (h) => { selDineH = h; updateDineTime() },
+    (m) => { selDineM = m; updateDineTime() }
+  )
+  buildTimePicker('col-pickup-hour', 'col-pickup-minute', selPickupH, selPickupM,
+    (h) => { selPickupH = h; updatePickupTime() },
+    (m) => { selPickupM = m; updatePickupTime() }
+  )
 }
 
 async function submitOrder() {
@@ -362,7 +410,7 @@ async function submitOrder() {
 
   let pickupTime = ''
   if (dineType === '內用') {
-    pickupTime = '內用'
+    pickupTime = '內用－' + document.getElementById('dine-time-value').textContent
   } else if (pickupType === '立即取餐') {
     pickupTime = '外帶－立即取餐'
   } else {
@@ -384,7 +432,7 @@ async function submitOrder() {
   document.getElementById('success').style.display = 'block'
 }
 
-initTimePicker()
+initTimePickers()
 </script>
 </body>
 </html>
